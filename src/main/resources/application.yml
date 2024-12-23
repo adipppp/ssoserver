@@ -1,0 +1,27 @@
+server:
+  port: ${PORT}
+
+logging:
+  level:
+    org.springframework.security: trace
+
+spring:
+  application:
+    name: SSOServer
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    url: ${PG_URL}
+    username: ${PG_USER}
+    password: ${PG_PASS}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
