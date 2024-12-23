@@ -25,3 +25,6 @@ spring:
     store-type: jdbc
     jdbc:
       initialize-schema: always
+
+root-user-name: ${ROOT_USER_NAME}
+root-user-password: ${ROOT_USER_PASS}
