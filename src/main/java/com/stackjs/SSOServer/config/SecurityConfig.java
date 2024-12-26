@@ -25,6 +25,7 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
@@ -81,21 +82,40 @@ public class SecurityConfig {
 
 	@Bean
 	public UserDetailsService userDetailsService(
-        DataSource dataSource,
+		DataSource dataSource,
         @Value("${root-user-name}") String rootUserName,
-        @Value("${root-user-password}") String rootUserPassword)
+        @Value("${root-user-password}") String rootUserPassword,
+		@Value("${admin-user-name}") String adminUserName,
+		@Value("${admin-user-password}") String adminUserPassword,
+		@Value("${user-name}") String regularUserName,
+		@Value("${user-password}") String regularUserPassword)
     {
         JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
         if (!userDetailsManager.userExists(rootUserName)) {
-            userDetailsManager.createUser(
-                User.withUsername(rootUserName)
-                    .passwordEncoder(passwordEncoder()::encode)
-                    .password(rootUserPassword)
-                    .roles("ROOT", "ADMIN", "USER")
-                    .build()
-            );
+			registerUser(userDetailsManager, rootUserName, rootUserPassword, "ROOT", "ADMIN", "USER");
         }
+		if (!userDetailsManager.userExists(adminUserName)) {
+			registerUser(userDetailsManager, adminUserName, adminUserPassword, "ADMIN", "USER");
+		}
+		if (!userDetailsManager.userExists(regularUserName)) {
+			registerUser(userDetailsManager, regularUserName, regularUserPassword, "USER");
+		}
 		return userDetailsManager;
+	}
+
+	private void registerUser(
+		UserDetailsManager userDetailsManager,
+		String name,
+		String password,
+		String... roles)
+	{
+		userDetailsManager.createUser(
+			User.withUsername(name)
+				.passwordEncoder(passwordEncoder()::encode)
+				.password(password)
+				.roles(roles)
+				.build()
+		);
 	}
 
 	@Bean

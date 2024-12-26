@@ -24,3 +24,9 @@ spring:
 
 root-user-name: ${ROOT_USER_NAME}
 root-user-password: ${ROOT_USER_PASS}
+
+admin-user-name: ${ADMIN_USER_NAME}
+admin-user-password: ${ADMIN_USER_PASS}
+
+user-name: ${USER_NAME}
+user-password: ${USER_PASS}
