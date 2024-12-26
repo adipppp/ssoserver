@@ -95,7 +95,7 @@ public class SecurityConfig {
                     .build()
             );
         }
-		return new JdbcUserDetailsManager(dataSource);
+		return userDetailsManager;
 	}
 
 	@Bean
